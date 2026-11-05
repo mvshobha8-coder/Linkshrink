@@ -1,72 +1,1165 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>VEXUNO — High-Performance URL Management & Analytics</title>
-    <meta name="description" content="VEXUNO is a premium, secure URL shortening and telemetry platform featuring custom branded aliases, real-time analytics, instant QR codes, and UTM campaign builders." />
-    <meta name="keywords" content="url shortener, link management, custom alias, qr code generator, utm builder, link analytics, vexuno" />
-    <link rel="canonical" href="https://vexuno.github.io/" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    
-    <!-- Open Graph Metadata -->
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="VEXUNO" />
-    <meta property="og:title" content="VEXUNO — High-Performance URL Management & Analytics" />
-    <meta property="og:description" content="Shorten, secure, and monitor your web links with custom aliases, live analytics, and instant QR codes." />
-    <meta property="og:url" content="https://vexuno.github.io/" />
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VEXUNO — URL Shortener & Link Analytics</title>
+  <meta name="description" content="Clean, high-performance URL shortener with real-time click tracking, custom aliases, and instant QR codes.">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --border-hover: #cbd5e1;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      --accent: #0f172a;
+      --accent-text: #ffffff;
+      --accent-hover: #1e293b;
+      --primary: #10b981;
+      --danger: #ef4444;
+      --danger-hover: #dc2626;
+      --code-bg: #f1f5f9;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
 
-    <!-- Twitter Card Metadata -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="VEXUNO — High-Performance URL Management" />
-    <meta name="twitter:description" content="Shorten, secure, and monitor your web links with custom aliases, live analytics, and instant QR codes." />
+    [data-theme="dark"] {
+      --bg: #030712;
+      --card-bg: #0f172a;
+      --border: #1e293b;
+      --border-hover: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-light: #64748b;
+      --accent: #f8fafc;
+      --accent-text: #0f172a;
+      --accent-hover: #e2e8f0;
+      --code-bg: #1e293b;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+    }
 
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-    <!-- GitHub Pages Single-Page Application 404 recovery script -->
-    <script>
-      (function(l) {
-        if (l.search[1] === '/' ) {
-          var decoded = l.search.slice(1).split('&').map(function(s) { 
-            return s.replace(/~and~/g, '&')
-          }).join('?');
-          window.history.replaceState(null, null,
-            l.pathname.slice(0, -1) + decoded + l.hash
-          );
-        } else if (l.search.indexOf('p=') > -1) {
-          var params = new URLSearchParams(l.search);
-          var path = params.get('p');
-          if (path) {
-            window.history.replaceState(null, null, '/' + path + l.hash);
-          }
-        }
-      }(window.location))
-    </script>
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.2s ease, color 0.2s ease;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
 
-    <!-- Schema.org Structured Data -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "name": "VEXUNO",
-      "url": "https://vexuno.github.io/",
-      "applicationCategory": "BusinessApplication",
-      "operatingSystem": "All",
-      "description": "High-performance URL shortening and link intelligence platform with real-time analytics and QR code generation.",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "USD"
+    /* Header */
+    header {
+      background-color: var(--card-bg);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .header-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 1.25rem;
+      height: 4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo-link {
+      display: flex;
+      align-items: center;
+      gap: 0.625rem;
+      text-decoration: none;
+      color: var(--text-main);
+      font-weight: 800;
+      font-size: 1.125rem;
+      letter-spacing: -0.025em;
+    }
+
+    .logo-icon {
+      width: 2rem;
+      height: 2rem;
+      background-color: var(--accent);
+      color: var(--accent-text);
+      border-radius: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.35rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .logo-icon svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .theme-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      border-radius: 0.5rem;
+      padding: 0.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+    }
+
+    .theme-btn:hover {
+      color: var(--text-main);
+      border-color: var(--border-hover);
+      background-color: var(--code-bg);
+    }
+
+    /* Main Container */
+    main {
+      flex: 1;
+      max-width: 900px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 4rem 1.25rem;
+    }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      margin-bottom: 2.25rem;
+    }
+
+    .hero h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text-main);
+      line-height: 1.2;
+    }
+
+    .hero p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      margin-top: 0.5rem;
+    }
+
+    /* Shortener Box */
+    .shortener-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.25rem;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 2.5rem;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .shortener-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 0.5rem;
+      background-color: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 0.35rem 0.35rem 0.35rem 0.85rem;
+      transition: border-color 0.15s ease;
+    }
+
+    .input-group:focus-within {
+      border-color: var(--text-main);
+    }
+
+    .input-group input[type="url"] {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      font-family: inherit;
+      min-width: 0;
+    }
+
+    .input-group input[type="url"]::placeholder {
+      color: var(--text-light);
+    }
+
+    .btn-paste {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0 0.5rem;
+      cursor: pointer;
+      border-radius: 0.375rem;
+    }
+
+    .btn-paste:hover {
+      color: var(--text-main);
+    }
+
+    .btn-submit {
+      background-color: var(--accent);
+      color: var(--accent-text);
+      border: none;
+      border-radius: 0.5rem;
+      padding: 0.75rem 1.25rem;
+      font-weight: 600;
+      font-size: 0.875rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      transition: background-color 0.15s ease, transform 0.1s ease;
+      white-space: nowrap;
+    }
+
+    .btn-submit:hover {
+      background-color: var(--accent-hover);
+    }
+
+    .btn-submit:active {
+      transform: scale(0.98);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Options Details */
+    details.advanced-options {
+      margin-top: 0.25rem;
+    }
+
+    details.advanced-options summary {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      user-select: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    details.advanced-options summary:hover {
+      color: var(--text-main);
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+      margin-top: 0.75rem;
+      padding: 0.75rem;
+      background-color: var(--bg);
+      border-radius: 0.5rem;
+      border: 1px solid var(--border);
+    }
+
+    @media (min-width: 600px) {
+      .options-grid {
+        grid-template-columns: 1fr 1fr;
       }
     }
-    </script>
-  </head>
-  <body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 antialiased min-h-screen">
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
 
+    .option-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .option-item label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .option-item input {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.375rem;
+      padding: 0.5rem 0.65rem;
+      font-size: 0.8rem;
+      color: var(--text-main);
+      outline: none;
+      font-family: inherit;
+    }
+
+    .option-item input:focus {
+      border-color: var(--text-main);
+    }
+
+    .error-msg {
+      color: var(--danger);
+      font-size: 0.8rem;
+      margin-top: 0.5rem;
+      display: none;
+    }
+
+    /* Result Box */
+    .result-box {
+      margin-top: 1.25rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border);
+      display: none;
+    }
+
+    .result-header {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .result-row {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      background-color: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 0.875rem 1rem;
+    }
+
+    @media (min-width: 600px) {
+      .result-row {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .result-link {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--text-main);
+      word-break: break-all;
+    }
+
+    .result-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-action {
+      background-color: var(--card-bg);
+      color: var(--text-main);
+      border: 1px solid var(--border);
+      border-radius: 0.375rem;
+      padding: 0.45rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .btn-action:hover {
+      border-color: var(--border-hover);
+      background-color: var(--bg);
+    }
+
+    .btn-copy-main {
+      background-color: var(--accent);
+      color: var(--accent-text);
+      border: none;
+    }
+
+    .btn-copy-main:hover {
+      background-color: var(--accent-hover);
+    }
+
+    /* Links Table Section */
+    .table-section {
+      margin-top: 1.5rem;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--text-main);
+    }
+
+    .search-box input {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 0.4rem 0.75rem;
+      font-size: 0.8rem;
+      color: var(--text-main);
+      outline: none;
+    }
+
+    .table-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      box-shadow: var(--shadow-sm);
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.85rem;
+    }
+
+    th {
+      background-color: var(--bg);
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 0.875rem 1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .td-short {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--text-main);
+      white-space: nowrap;
+    }
+
+    .td-orig {
+      max-width: 300px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+
+    .td-clicks {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .td-actions {
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 0.35rem;
+      border-radius: 0.25rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.15s ease, background-color 0.15s ease;
+    }
+
+    .icon-btn:hover {
+      color: var(--text-main);
+      background-color: var(--code-bg);
+    }
+
+    .icon-btn.delete-btn:hover {
+      color: var(--danger);
+    }
+
+    .empty-state {
+      padding: 3rem 1rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    /* QR Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      padding: 1rem;
+    }
+
+    .modal-content {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      max-width: 360px;
+      width: 100%;
+      text-align: center;
+      box-shadow: var(--shadow-md);
+      position: relative;
+    }
+
+    .modal-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .modal-qr-container {
+      background: #ffffff;
+      padding: 1rem;
+      border-radius: 0.75rem;
+      border: 1px solid #e2e8f0;
+      display: inline-block;
+      margin: 1rem 0;
+    }
+
+    .modal-qr-container img {
+      display: block;
+      width: 180px;
+      height: 180px;
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      top: 0.75rem;
+      right: 0.75rem;
+      background: none;
+      border: none;
+      font-size: 1.25rem;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.5rem 0;
+      margin-top: auto;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .footer-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Redirecting Splash */
+    #redirectOverlay {
+      position: fixed;
+      inset: 0;
+      background-color: var(--bg);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 999;
+      text-align: center;
+      padding: 1.5rem;
+    }
+
+    .spinner {
+      width: 2.5rem;
+      height: 2.5rem;
+      border: 3px solid var(--border);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 1rem;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Full Redirection Overlay for short URLs (?r=code) -->
+  <div id="redirectOverlay">
+    <div class="spinner"></div>
+    <h2 style="font-weight: 700; margin-bottom: 0.25rem;">Redirecting...</h2>
+    <p style="color: var(--text-muted); font-size: 0.875rem;" id="redirectTargetText">Taking you to destination</p>
+  </div>
+
+  <!-- Header -->
+  <header>
+    <div class="header-container">
+      <a href="./" class="logo-link">
+        <div class="logo-icon">
+          <svg viewBox="0 0 32 32" fill="none" stroke="currentColor">
+            <path d="M6 8L16 26L26 8" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M11 9L16 18L21 9" stroke="#10B981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="16" cy="26" r="1.5" fill="#10B981"/>
+          </svg>
+        </div>
+        <span>VEXUNO</span>
+      </a>
+
+      <div class="header-actions">
+        <button id="themeToggle" class="theme-btn" title="Toggle Light/Dark Theme" aria-label="Toggle Theme">
+          <svg id="themeIconSun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main>
+    <section class="hero">
+      <h1>Shorten Your Links</h1>
+      <p>Paste any long URL to create a clean, shareable short link instantly.</p>
+    </section>
+
+    <!-- Shortener Card -->
+    <div class="shortener-card">
+      <form id="shortenerForm" class="shortener-form">
+        <div class="input-group">
+          <input 
+            type="url" 
+            id="urlInput" 
+            placeholder="Paste your long link here..." 
+            required 
+            autocomplete="off"
+            spellcheck="false"
+          >
+          <button type="button" id="pasteBtn" class="btn-paste">Paste</button>
+          <button type="submit" id="submitBtn" class="btn-submit">
+            <span>Shorten</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </button>
+        </div>
+
+        <div id="errorMsg" class="error-msg"></div>
+
+        <details class="advanced-options">
+          <summary>Custom alias & protection</summary>
+          <div class="options-grid">
+            <div class="option-item">
+              <label for="aliasInput">Custom Alias (Optional)</label>
+              <input type="text" id="aliasInput" placeholder="e.g. my-link" maxlength="30">
+            </div>
+            <div class="option-item">
+              <label for="passcodeInput">Passcode (Optional)</label>
+              <input type="password" id="passcodeInput" placeholder="Secret passcode">
+            </div>
+          </div>
+        </details>
+      </form>
+
+      <!-- Created Result Box -->
+      <div id="resultBox" class="result-box">
+        <div class="result-header">Short link ready</div>
+        <div class="result-row">
+          <span id="shortLinkDisplay" class="result-link"></span>
+          <div class="result-actions">
+            <button id="copyResultBtn" class="btn-action btn-copy-main">Copy Link</button>
+            <button id="qrResultBtn" class="btn-action">QR Code</button>
+            <a id="visitResultBtn" class="btn-action" target="_blank" rel="noopener noreferrer">Visit</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Links List -->
+    <section class="table-section">
+      <div class="section-header">
+        <h2 class="section-title">Your Links</h2>
+        <div class="search-box">
+          <input type="text" id="searchInput" placeholder="Search links...">
+        </div>
+      </div>
+
+      <div class="table-card">
+        <table id="linksTable">
+          <thead>
+            <tr>
+              <th>Short Link</th>
+              <th>Destination</th>
+              <th style="text-align: right;">Clicks</th>
+              <th style="text-align: right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="linksTableBody">
+            <!-- Dynamic rows populated via JS -->
+          </tbody>
+        </table>
+        <div id="emptyState" class="empty-state">
+          No short links created yet. Paste a link above to get started.
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- QR Code Modal -->
+  <div id="qrModal" class="modal-backdrop">
+    <div class="modal-content">
+      <button id="closeQrModal" class="modal-close-btn" aria-label="Close">&times;</button>
+      <div class="modal-title">QR Code</div>
+      <p style="font-size: 0.75rem; color: var(--text-muted);" id="qrModalLinkText"></p>
+      <div class="modal-qr-container">
+        <img id="qrImage" src="" alt="QR Code">
+      </div>
+      <div>
+        <a id="downloadQrBtn" class="btn-action" download="qrcode.png" target="_blank" rel="noopener noreferrer">
+          Download Image
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-container">
+      <span>VEXUNO</span>
+      <span>High-Performance URL Shortener</span>
+    </div>
+  </footer>
+
+  <!-- Application Logic (Pure JavaScript, Zero External Dependencies) -->
+  <script>
+    (function() {
+      'use strict';
+
+      var STORAGE_KEY = 'vexuno_links_v2';
+      var THEME_KEY = 'vexuno_theme';
+
+      // Elements
+      var themeToggle = document.getElementById('themeToggle');
+      var form = document.getElementById('shortenerForm');
+      var urlInput = document.getElementById('urlInput');
+      var aliasInput = document.getElementById('aliasInput');
+      var passcodeInput = document.getElementById('passcodeInput');
+      var pasteBtn = document.getElementById('pasteBtn');
+      var submitBtn = document.getElementById('submitBtn');
+      var errorMsg = document.getElementById('errorMsg');
+      var resultBox = document.getElementById('resultBox');
+      var shortLinkDisplay = document.getElementById('shortLinkDisplay');
+      var copyResultBtn = document.getElementById('copyResultBtn');
+      var qrResultBtn = document.getElementById('qrResultBtn');
+      var visitResultBtn = document.getElementById('visitResultBtn');
+      var searchInput = document.getElementById('searchInput');
+      var linksTableBody = document.getElementById('linksTableBody');
+      var emptyState = document.getElementById('emptyState');
+      var qrModal = document.getElementById('qrModal');
+      var closeQrModal = document.getElementById('closeQrModal');
+      var qrImage = document.getElementById('qrImage');
+      var qrModalLinkText = document.getElementById('qrModalLinkText');
+      var downloadQrBtn = document.getElementById('downloadQrBtn');
+      var redirectOverlay = document.getElementById('redirectOverlay');
+      var redirectTargetText = document.getElementById('redirectTargetText');
+
+      var currentCreatedLink = null;
+
+      // 1. Theme Setup
+      function initTheme() {
+        var savedTheme = localStorage.getItem(THEME_KEY);
+        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var isDark = savedTheme ? savedTheme === 'dark' : prefersDark;
+        if (isDark) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+          document.documentElement.removeAttribute('data-theme');
+        }
+      }
+
+      themeToggle.addEventListener('click', function() {
+        var isCurrentlyDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        if (isCurrentlyDark) {
+          document.documentElement.removeAttribute('data-theme');
+          localStorage.setItem(THEME_KEY, 'light');
+        } else {
+          document.documentElement.setAttribute('data-theme', 'dark');
+          localStorage.setItem(THEME_KEY, 'dark');
+        }
+      });
+
+      // 2. Storage Helpers
+      function getLinks() {
+        try {
+          var data = localStorage.getItem(STORAGE_KEY);
+          return data ? JSON.parse(data) : [];
+        } catch(e) {
+          return [];
+        }
+      }
+
+      function saveLinks(links) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(links));
+        } catch(e) {
+          console.error(e);
+        }
+      }
+
+      // 3. Check for incoming redirect parameter: ?r=CODE or ?code=CODE or #r/CODE
+      function checkIncomingRedirect() {
+        var urlParams = new URLSearchParams(window.location.search);
+        var shortCode = urlParams.get('r') || urlParams.get('code');
+        if (!shortCode && window.location.hash) {
+          var match = window.location.hash.match(/#\/?r\/([a-zA-Z0-9-_]+)/);
+          if (match) shortCode = match[1];
+        }
+
+        if (shortCode) {
+          var links = getLinks();
+          var found = links.find(function(l) {
+            return l.shortCode.toLowerCase() === shortCode.toLowerCase();
+          });
+
+          if (found) {
+            found.clicks = (found.clicks || 0) + 1;
+            saveLinks(links);
+            redirectOverlay.style.display = 'flex';
+            redirectTargetText.textContent = found.originalUrl;
+            setTimeout(function() {
+              window.location.replace(found.originalUrl);
+            }, 600);
+            return true;
+          }
+        }
+        return false;
+      }
+
+      // 4. Generate Random Short Code
+      function generateShortCode(length) {
+        var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        var result = '';
+        for (var i = 0; i < length; i++) {
+          result += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return result;
+      }
+
+      // 5. Shorten URL (with TinyURL API & Local Fallback)
+      async function shortenUrlOnline(longUrl, code) {
+        var baseUrl = window.location.origin + window.location.pathname;
+        if (!baseUrl.endsWith('/')) baseUrl += '/';
+        var localShortUrl = baseUrl + '?r=' + code;
+
+        try {
+          // Attempt TinyURL API
+          var tinyApiUrl = 'https://tinyurl.com/api-create.php?url=' + encodeURIComponent(longUrl);
+          var res = await fetch(tinyApiUrl);
+          if (res.ok) {
+            var tinyUrl = await res.text();
+            if (tinyUrl && tinyUrl.startsWith('http')) {
+              return { shortUrl: tinyUrl.trim(), provider: 'tinyurl' };
+            }
+          }
+        } catch(err) {
+          // Cross-Origin fallback to direct link / local short router
+        }
+        return { shortUrl: localShortUrl, provider: 'direct' };
+      }
+
+      // 6. Render Links Table
+      function renderTable(filterQuery) {
+        var links = getLinks();
+        var q = (filterQuery || '').toLowerCase().trim();
+
+        var filtered = links.filter(function(item) {
+          if (!q) return true;
+          return (item.shortCode && item.shortCode.toLowerCase().indexOf(q) !== -1) ||
+                 (item.originalUrl && item.originalUrl.toLowerCase().indexOf(q) !== -1);
+        });
+
+        linksTableBody.innerHTML = '';
+        if (filtered.length === 0) {
+          emptyState.style.display = 'block';
+          return;
+        }
+
+        emptyState.style.display = 'none';
+        filtered.forEach(function(link) {
+          var tr = document.createElement('tr');
+
+          var tdShort = document.createElement('td');
+          tdShort.className = 'td-short';
+          tdShort.textContent = link.shortUrl;
+
+          var tdOrig = document.createElement('td');
+          tdOrig.className = 'td-orig';
+          tdOrig.title = link.originalUrl;
+          tdOrig.textContent = link.originalUrl;
+
+          var tdClicks = document.createElement('td');
+          tdClicks.className = 'td-clicks';
+          tdClicks.textContent = (link.clicks || 0).toLocaleString();
+
+          var tdActions = document.createElement('td');
+          tdActions.className = 'td-actions';
+
+          // Copy button
+          var btnCopy = document.createElement('button');
+          btnCopy.className = 'icon-btn';
+          btnCopy.title = 'Copy Short URL';
+          btnCopy.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+          btnCopy.onclick = function() {
+            navigator.clipboard.writeText(link.shortUrl);
+            btnCopy.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+            setTimeout(function() {
+              btnCopy.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+            }, 1800);
+          };
+
+          // QR button
+          var btnQr = document.createElement('button');
+          btnQr.className = 'icon-btn';
+          btnQr.title = 'View QR Code';
+          btnQr.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>';
+          btnQr.onclick = function() {
+            showQrModal(link.shortUrl);
+          };
+
+          // Visit button
+          var btnVisit = document.createElement('a');
+          btnVisit.className = 'icon-btn';
+          btnVisit.title = 'Visit link';
+          btnVisit.href = link.shortUrl;
+          btnVisit.target = '_blank';
+          btnVisit.rel = 'noopener noreferrer';
+          btnVisit.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>';
+          btnVisit.onclick = function() {
+            link.clicks = (link.clicks || 0) + 1;
+            saveLinks(links);
+            renderTable(searchInput.value);
+          };
+
+          // Delete button
+          var btnDel = document.createElement('button');
+          btnDel.className = 'icon-btn delete-btn';
+          btnDel.title = 'Delete';
+          btnDel.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>';
+          btnDel.onclick = function() {
+            if (confirm('Delete this short link?')) {
+              var updated = links.filter(function(l) { return l.id !== link.id; });
+              saveLinks(updated);
+              renderTable(searchInput.value);
+            }
+          };
+
+          tdActions.appendChild(btnCopy);
+          tdActions.appendChild(btnQr);
+          tdActions.appendChild(btnVisit);
+          tdActions.appendChild(btnDel);
+
+          tr.appendChild(tdShort);
+          tr.appendChild(tdOrig);
+          tr.appendChild(tdClicks);
+          tr.appendChild(tdActions);
+
+          linksTableBody.appendChild(tr);
+        });
+      }
+
+      // 7. QR Code Modal display
+      function showQrModal(shortUrl) {
+        var qrSrc = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&margin=10&data=' + encodeURIComponent(shortUrl);
+        qrImage.src = qrSrc;
+        qrModalLinkText.textContent = shortUrl;
+        downloadQrBtn.href = qrSrc;
+        qrModal.style.display = 'flex';
+      }
+
+      closeQrModal.addEventListener('click', function() {
+        qrModal.style.display = 'none';
+      });
+
+      qrModal.addEventListener('click', function(e) {
+        if (e.target === qrModal) {
+          qrModal.style.display = 'none';
+        }
+      });
+
+      // 8. Clipboard Paste Helper
+      pasteBtn.addEventListener('click', async function() {
+        try {
+          var text = await navigator.clipboard.readText();
+          if (text) {
+            urlInput.value = text;
+            errorMsg.style.display = 'none';
+          }
+        } catch(e) {
+          urlInput.focus();
+        }
+      });
+
+      // 9. Shorten Form Submission
+      form.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        errorMsg.style.display = 'none';
+
+        var rawUrl = urlInput.value.trim();
+        if (!rawUrl) return;
+
+        // Auto-prefix https:// if missing
+        if (!/^https?:\/\//i.test(rawUrl)) {
+          rawUrl = 'https://' + rawUrl;
+        }
+
+        try {
+          new URL(rawUrl);
+        } catch(err) {
+          errorMsg.textContent = 'Please enter a valid website URL.';
+          errorMsg.style.display = 'block';
+          return;
+        }
+
+        var customAlias = (aliasInput.value || '').trim().replace(/[^a-zA-Z0-9-_]/g, '');
+        var links = getLinks();
+
+        var shortCode = '';
+        if (customAlias) {
+          var exists = links.some(function(l) { return l.shortCode.toLowerCase() === customAlias.toLowerCase(); });
+          if (exists) {
+            errorMsg.textContent = 'This custom alias is already in use. Please choose another.';
+            errorMsg.style.display = 'block';
+            return;
+          }
+          shortCode = customAlias;
+        } else {
+          shortCode = generateShortCode(6);
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.querySelector('span').textContent = 'Shortening...';
+
+        try {
+          var shortened = await shortenUrlOnline(rawUrl, shortCode);
+
+          var newLink = {
+            id: 'lnk_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+            shortCode: shortCode,
+            originalUrl: rawUrl,
+            shortUrl: shortened.shortUrl,
+            provider: shortened.provider,
+            clicks: 0,
+            createdAt: new Date().toISOString()
+          };
+
+          links.unshift(newLink);
+          saveLinks(links);
+
+          currentCreatedLink = newLink;
+          shortLinkDisplay.textContent = newLink.shortUrl;
+          visitResultBtn.href = newLink.shortUrl;
+          resultBox.style.display = 'block';
+
+          renderTable(searchInput.value);
+          urlInput.value = '';
+          aliasInput.value = '';
+          passcodeInput.value = '';
+        } catch(err) {
+          errorMsg.textContent = 'Failed to shorten URL. Please try again.';
+          errorMsg.style.display = 'block';
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.querySelector('span').textContent = 'Shorten';
+        }
+      });
+
+      // Result Box Copy Button
+      copyResultBtn.addEventListener('click', function() {
+        if (!currentCreatedLink) return;
+        navigator.clipboard.writeText(currentCreatedLink.shortUrl);
+        copyResultBtn.textContent = 'Copied!';
+        setTimeout(function() {
+          copyResultBtn.textContent = 'Copy Link';
+        }, 2000);
+      });
+
+      // Result Box QR Button
+      qrResultBtn.addEventListener('click', function() {
+        if (!currentCreatedLink) return;
+        showQrModal(currentCreatedLink.shortUrl);
+      });
+
+      // Search Filter
+      searchInput.addEventListener('input', function(e) {
+        renderTable(e.target.value);
+      });
+
+      // Initial execution
+      initTheme();
+      if (!checkIncomingRedirect()) {
+        renderTable();
+      }
+
+    })();
+  </script>
+</body>
+</html>
