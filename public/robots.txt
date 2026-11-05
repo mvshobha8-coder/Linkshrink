@@ -4,4 +4,4 @@ Allow: /
 Disallow: /r/
 Disallow: /api/
 
-Sitemap: https://vexuno.github.io/sitemap.xml
+Sitemap: https://venuxo.github.io/VEXUNO/sitemap.xml

@@ -4,9 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VEXUNO — URL Shortener & Link Analytics</title>
-  <meta name="description" content="Clean, high-performance URL shortener with real-time click tracking, custom aliases, and instant QR codes.">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  
+  <link rel="canonical" href="https://venuxo.github.io/VEXUNO/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="VEXUNO — URL Shortener & Link Analytics">
+  <meta property="og:description" content="Clean, high-performance URL shortener with real-time click tracking, custom aliases, and instant QR codes.">
+  <meta property="og:url" content="https://venuxo.github.io/VEXUNO/">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="VEXUNO — URL Shortener">
+  <meta name="twitter:description" content="Clean, high-performance URL shortener with real-time click tracking, custom aliases, and instant QR codes.">
+
   <style>
     :root {
       --bg: #f8fafc;
@@ -906,8 +913,12 @@
 
       // 5. Shorten URL (with TinyURL API & Local Fallback)
       async function shortenUrlOnline(longUrl, code) {
+        var githubBase = 'https://venuxo.github.io/VEXUNO/';
         var baseUrl = window.location.origin + window.location.pathname;
         if (!baseUrl.endsWith('/')) baseUrl += '/';
+        if (window.location.hostname.includes('github.io')) {
+          baseUrl = githubBase;
+        }
         var localShortUrl = baseUrl + '?r=' + code;
 
         try {
