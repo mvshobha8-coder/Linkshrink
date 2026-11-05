@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>VEXUNO - Redirecting...</title>
+    <script>
+      // Single Page Application redirect script for GitHub Pages
+      // Encodes path and query into hash or search param so index.html recovers it
+      var pathSegmentsToKeep = 0;
+      var l = window.location;
+      var repoOffset = l.pathname.split('/').filter(Boolean).length > 1 ? 1 : 0;
+      var path = l.pathname.slice(1);
+      
+      // Preserve path as query parameter for index.html SPA routing
+      l.replace(
+        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') +
+        l.pathname.split('/').slice(0, 1 + repoOffset).join('/') + '/?p=' +
+        encodeURIComponent(path) +
+        (l.search ? '&q=' + encodeURIComponent(l.search.slice(1)) : '') +
+        l.hash
+      );
+    </script>
+  </head>
+  <body>
+    <p>Redirecting to VEXUNO platform...</p>
+  </body>
+</html>

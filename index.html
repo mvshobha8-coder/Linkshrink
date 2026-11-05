@@ -3,15 +3,66 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>LinkShrink - Fast URL Shortener & Analytics (linkshrink.kesug.com)</title>
-    <meta name="description" content="LinkShrink (linkshrink.kesug.com) - Fast, privacy-friendly URL shortener with custom aliases, real-time analytics, QR code generation, UTM campaign builder, and link management." />
-    <meta property="og:title" content="LinkShrink - Fast URL Shortener (linkshrink.kesug.com)" />
-    <meta property="og:description" content="LinkShrink (linkshrink.kesug.com) - Fast, privacy-friendly URL shortener with custom aliases, real-time analytics, QR code generation, UTM campaign builder, and link management." />
+    <title>VEXUNO — High-Performance URL Management & Analytics</title>
+    <meta name="description" content="VEXUNO is a premium, secure URL shortening and telemetry platform featuring custom branded aliases, real-time analytics, instant QR codes, and UTM campaign builders." />
+    <meta name="keywords" content="url shortener, link management, custom alias, qr code generator, utm builder, link analytics, vexuno" />
+    <link rel="canonical" href="https://vexuno.github.io/" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    
+    <!-- Open Graph Metadata -->
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="VEXUNO" />
+    <meta property="og:title" content="VEXUNO — High-Performance URL Management & Analytics" />
+    <meta property="og:description" content="Shorten, secure, and monitor your web links with custom aliases, live analytics, and instant QR codes." />
+    <meta property="og:url" content="https://vexuno.github.io/" />
+
+    <!-- Twitter Card Metadata -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="VEXUNO — High-Performance URL Management" />
+    <meta name="twitter:description" content="Shorten, secure, and monitor your web links with custom aliases, live analytics, and instant QR codes." />
+
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+    <!-- GitHub Pages Single-Page Application 404 recovery script -->
+    <script>
+      (function(l) {
+        if (l.search[1] === '/' ) {
+          var decoded = l.search.slice(1).split('&').map(function(s) { 
+            return s.replace(/~and~/g, '&')
+          }).join('?');
+          window.history.replaceState(null, null,
+            l.pathname.slice(0, -1) + decoded + l.hash
+          );
+        } else if (l.search.indexOf('p=') > -1) {
+          var params = new URLSearchParams(l.search);
+          var path = params.get('p');
+          if (path) {
+            window.history.replaceState(null, null, '/' + path + l.hash);
+          }
+        }
+      }(window.location))
+    </script>
+
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "VEXUNO",
+      "url": "https://vexuno.github.io/",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "All",
+      "description": "High-performance URL shortening and link intelligence platform with real-time analytics and QR code generation.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      }
+    }
+    </script>
   </head>
   <body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 antialiased min-h-screen">
     <div id="root"></div>

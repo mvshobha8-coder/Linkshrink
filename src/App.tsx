@@ -4,27 +4,24 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { ShortLink, ClickEvent, ActiveTab } from './types/index.ts';
+import { ShortLink, ClickEvent, ActiveTab, BackendConfig } from './types/index.ts';
 import {
   loadLinks,
   saveLinks,
   loadClicks,
-  saveClicks,
-  resetToDefaults,
+  loadBackendConfig,
 } from './utils/storage.ts';
 import { Navbar } from './components/Navbar.tsx';
 import { ShortenerForm } from './components/ShortenerForm.tsx';
 import { LinksTable } from './components/LinksTable.tsx';
 import { AnalyticsView } from './components/AnalyticsView.tsx';
-import { UtmBuilder } from './components/UtmBuilder.tsx';
-import { BatchShortener } from './components/BatchShortener.tsx';
 import { QrCodeModal } from './components/QrCodeModal.tsx';
 import { RedirectSimulatorModal } from './components/RedirectSimulatorModal.tsx';
-import { Link2, ShieldCheck, Zap, Globe, Sparkles } from 'lucide-react';
 
 export default function App() {
   const [links, setLinks] = useState<ShortLink[]>([]);
   const [clicks, setClicks] = useState<ClickEvent[]>([]);
+  const [backendConfig, setBackendConfig] = useState<BackendConfig>(loadBackendConfig());
   const [activeTab, setActiveTab] = useState<ActiveTab>('shortener');
   const [isDark, setIsDark] = useState<boolean>(false);
 
@@ -33,31 +30,28 @@ export default function App() {
   const [redirectModalLink, setRedirectModalLink] = useState<ShortLink | null>(null);
   const [analyticsLinkId, setAnalyticsLinkId] = useState<string | null>(null);
 
-  // Prefilled Shortener data from UTM builder or Quick action
+  // Prefilled Shortener data
   const [prefilledUrl, setPrefilledUrl] = useState('');
-  const [prefilledUtm, setPrefilledUtm] = useState<ShortLink['utm'] | undefined>(undefined);
 
-  // Base Domain (defaults to linkshrink.kesug.com as requested)
-  const [baseUrl, setBaseUrl] = useState('https://linkshrink.kesug.com');
-  const [availableDomains, setAvailableDomains] = useState<string[]>([
-    'https://linkshrink.kesug.com',
-  ]);
+  // Base domain computation (relative & absolute for GitHub Pages)
+  const [baseDomain, setBaseDomain] = useState('');
 
   // Initial Data & Theme Setup
   useEffect(() => {
     const loadedLinks = loadLinks();
     const loadedClicks = loadClicks();
+    const loadedConfig = loadBackendConfig();
     setLinks(loadedLinks);
     setClicks(loadedClicks);
+    setBackendConfig(loadedConfig);
 
     if (typeof window !== 'undefined') {
       const origin = window.location.origin;
-      if (origin && origin !== 'https://linkshrink.kesug.com') {
-        setAvailableDomains(['https://linkshrink.kesug.com', origin]);
-      }
+      const pathname = window.location.pathname.replace(/\/404\.html$/, '/');
+      const fullBase = `${origin}${pathname.endsWith('/') ? pathname : pathname + '/'}`;
+      setBaseDomain(fullBase);
 
-      // Check dark mode preference or localStorage
-      const savedTheme = localStorage.getItem('linkshrink_theme');
+      const savedTheme = localStorage.getItem('vexuno_theme');
       const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
       const initialDark = savedTheme ? savedTheme === 'dark' : prefersDark;
       setIsDark(initialDark);
@@ -67,10 +61,10 @@ export default function App() {
         document.documentElement.classList.remove('dark');
       }
 
-      // Check if URL has /r/code in pathname or hash to trigger direct redirection simulator
-      const path = window.location.pathname;
+      // Check if URL has hash route e.g. #r/code or path /r/code
       const hash = window.location.hash;
-      const match = path.match(/\/r\/([a-zA-Z0-9-_]+)/) || hash.match(/#r\/([a-zA-Z0-9-_]+)/);
+      const path = window.location.pathname;
+      const match = hash.match(/#\/?r\/([a-zA-Z0-9-_]+)/) || path.match(/\/r\/([a-zA-Z0-9-_]+)/);
       if (match && match[1]) {
         const found = loadedLinks.find(
           (l) => l.shortCode.toLowerCase() === match[1].toLowerCase()
@@ -87,10 +81,10 @@ export default function App() {
     setIsDark(nextDark);
     if (nextDark) {
       document.documentElement.classList.add('dark');
-      localStorage.setItem('linkshrink_theme', 'dark');
+      localStorage.setItem('vexuno_theme', 'dark');
     } else {
       document.documentElement.classList.remove('dark');
-      localStorage.setItem('linkshrink_theme', 'light');
+      localStorage.setItem('vexuno_theme', 'light');
     }
   };
 
@@ -98,13 +92,6 @@ export default function App() {
     const nextLinks = [newLink, ...links];
     setLinks(nextLinks);
     saveLinks(nextLinks);
-  };
-
-  const handleBatchCreated = (newLinks: ShortLink[]) => {
-    const nextLinks = [...newLinks, ...links];
-    setLinks(nextLinks);
-    saveLinks(nextLinks);
-    setActiveTab('links');
   };
 
   const handleUpdateLink = (updated: ShortLink) => {
@@ -119,32 +106,9 @@ export default function App() {
     saveLinks(nextLinks);
   };
 
-  const handleResetData = () => {
-    if (confirm('Restore sample demonstration links and click telemetry?')) {
-      const { links: restoredLinks, clicks: restoredClicks } = resetToDefaults();
-      setLinks(restoredLinks);
-      setClicks(restoredClicks);
-    }
-  };
-
   const handleLinkUpdatedFromRedirect = (updated: ShortLink, click: ClickEvent) => {
     handleUpdateLink(updated);
     setClicks((prev) => [click, ...prev]);
-  };
-
-  const handleSendFromUtm = (
-    urlWithUtm: string,
-    utmData: {
-      source: string;
-      medium: string;
-      campaign: string;
-      term: string;
-      content: string;
-    }
-  ) => {
-    setPrefilledUrl(urlWithUtm);
-    setPrefilledUtm(utmData);
-    setActiveTab('shortener');
   };
 
   const handleOpenAnalyticsForLink = (link: ShortLink) => {
@@ -153,88 +117,32 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors">
-      {/* 3-Zone Top Navigation Contract */}
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors selection:bg-slate-900 selection:text-white dark:selection:bg-white dark:selection:text-slate-950">
+      {/* Clean Navigation Bar */}
       <Navbar
         activeTab={activeTab}
-        onTabChange={(tab) => {
-          setActiveTab(tab);
-          if (tab === 'analytics' && analyticsLinkId) {
-            // Keep selected link or reset on deliberate tab click
-          }
-        }}
+        onTabChange={(tab) => setActiveTab(tab)}
         isDark={isDark}
         onToggleTheme={handleToggleTheme}
         onNewLinkClick={() => {
           setPrefilledUrl('');
-          setPrefilledUtm(undefined);
           setActiveTab('shortener');
         }}
-        totalLinksCount={links.length}
       />
 
-      {/* Main Content Viewport */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+      {/* Main Content */}
+      <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-8">
         {activeTab === 'shortener' && (
-          <div className="space-y-10">
-            <ShortenerForm
-              onLinkCreated={handleLinkCreated}
-              existingLinks={links}
-              baseUrl={baseUrl}
-              onOpenQr={(link) => setQrModalLink(link)}
-              onOpenRedirect={(link) => setRedirectModalLink(link)}
-              onOpenAnalytics={handleOpenAnalyticsForLink}
-              initialUrl={prefilledUrl}
-              initialUtm={prefilledUtm}
-            />
-
-            {/* Feature Highlights Section */}
-            <div className="max-w-4xl mx-auto pt-6 border-t border-slate-200/80 dark:border-slate-800/80">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="flex items-start gap-3 p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200/60 dark:border-slate-800 shadow-xs">
-                  <div className="p-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-800 dark:text-slate-200">
-                    <Zap className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-bold text-slate-900 dark:text-white">
-                      Instant Redirection
-                    </h4>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                      High-throughput redirect endpoints with sub-10ms routing simulation.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3 p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200/60 dark:border-slate-800 shadow-xs">
-                  <div className="p-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-800 dark:text-slate-200">
-                    <ShieldCheck className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-bold text-slate-900 dark:text-white">
-                      Protected & Ephemeral
-                    </h4>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                      Optional passcode verification, auto-expiration, and visit caps.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-3 p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200/60 dark:border-slate-800 shadow-xs">
-                  <div className="p-2 bg-slate-100 dark:bg-slate-800 rounded-lg text-slate-800 dark:text-slate-200">
-                    <Globe className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h4 className="text-xs font-bold text-slate-900 dark:text-white">
-                      Traffic Intelligence
-                    </h4>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                      Monitor referrers, geographic origins, and device telemetry in real time.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <ShortenerForm
+            onLinkCreated={handleLinkCreated}
+            existingLinks={links}
+            baseDomain={baseDomain}
+            backendConfig={backendConfig}
+            onOpenQr={(link) => setQrModalLink(link)}
+            onOpenRedirect={(link) => setRedirectModalLink(link)}
+            onOpenAnalytics={handleOpenAnalyticsForLink}
+            initialUrl={prefilledUrl}
+          />
         )}
 
         {activeTab === 'links' && (
@@ -245,8 +153,7 @@ export default function App() {
             onOpenQr={(link) => setQrModalLink(link)}
             onOpenRedirect={(link) => setRedirectModalLink(link)}
             onOpenAnalytics={handleOpenAnalyticsForLink}
-            onResetData={handleResetData}
-            baseUrl={baseUrl}
+            baseDomain={baseDomain}
           />
         )}
 
@@ -256,15 +163,9 @@ export default function App() {
             clicks={clicks}
             selectedLinkId={analyticsLinkId}
             onSelectLink={(id) => setAnalyticsLinkId(id)}
+            onOpenQr={(link) => setQrModalLink(link)}
+            onOpenRedirect={(link) => setRedirectModalLink(link)}
           />
-        )}
-
-        {activeTab === 'utm' && (
-          <UtmBuilder onSendToShortener={handleSendFromUtm} />
-        )}
-
-        {activeTab === 'batch' && (
-          <BatchShortener onBatchCreated={handleBatchCreated} baseUrl={baseUrl} />
         )}
       </main>
 
@@ -273,7 +174,7 @@ export default function App() {
         <QrCodeModal
           link={qrModalLink}
           onClose={() => setQrModalLink(null)}
-          baseUrl={baseUrl}
+          baseUrl={baseDomain}
         />
       )}
 
@@ -283,25 +184,14 @@ export default function App() {
           link={redirectModalLink}
           onClose={() => setRedirectModalLink(null)}
           onLinkUpdated={handleLinkUpdatedFromRedirect}
-          baseUrl={baseUrl}
+          baseUrl={baseDomain}
         />
       )}
 
-      {/* Clean quiet footer adhering to constitution (§1.B anti-slop rules) */}
-      <footer className="border-t border-slate-200/80 dark:border-slate-800/80 bg-white/50 dark:bg-slate-900/50 py-6 mt-auto">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
-          <div className="flex items-center gap-2">
-            <span className="font-semibold text-slate-700 dark:text-slate-300">LinkShrink</span>
-            <span aria-hidden="true">·</span>
-            <span className="font-mono text-slate-600 dark:text-slate-400">linkshrink.kesug.com</span>
-            <span aria-hidden="true">·</span>
-            <span>URL Management & Telemetry</span>
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="font-mono tabular-nums">{links.length} Active Links</span>
-            <span aria-hidden="true">·</span>
-            <span>Local Encrypted Storage</span>
-          </div>
+      {/* Clean Minimal Footer */}
+      <footer className="border-t border-slate-200/60 dark:border-slate-800/60 py-6 mt-auto">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 flex items-center justify-between text-xs text-slate-400 dark:text-slate-500">
+          <span>VEXUNO</span>
         </div>
       </footer>
     </div>

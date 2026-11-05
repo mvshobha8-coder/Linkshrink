@@ -1,0 +1,7 @@
+# Robots.txt for VEXUNO URL Shortener
+User-agent: *
+Allow: /
+Disallow: /r/
+Disallow: /api/
+
+Sitemap: https://vexuno.github.io/sitemap.xml

@@ -3,13 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+export type ShortenerProvider = 'vexuno_direct' | 'tinyurl' | 'custom_api';
+
 export interface ShortLink {
   id: string;
   shortCode: string;
   originalUrl: string;
+  shortUrl: string; // The complete, reachable short URL
+  provider: ShortenerProvider;
   title: string;
   createdAt: string;
-  clicks: number;
+  clicks: number; // Real clicks only - zero fake counts
   tags: string[];
   isActive: boolean;
   password?: string;
@@ -28,14 +32,21 @@ export interface ShortLink {
 export interface ClickEvent {
   id: string;
   linkId: string;
-  timestamp: string;
-  referrer: string;
+  timestamp: string; // Real timestamp
+  referrer: string; // Real document.referrer or 'Direct'
   device: 'Desktop' | 'Mobile' | 'Tablet';
   browser: 'Chrome' | 'Safari' | 'Firefox' | 'Edge' | 'Other';
-  country: string;
-  countryCode: string;
+  userAgent?: string;
+  screenResolution?: string;
+  language?: string;
 }
 
-export type ActiveTab = 'shortener' | 'links' | 'analytics' | 'utm' | 'batch';
+export interface BackendConfig {
+  apiUrl: string;
+  apiKey: string;
+  enabled: boolean;
+  autoSync: boolean;
+}
+
+export type ActiveTab = 'shortener' | 'links' | 'analytics';
 export type SortOption = 'newest' | 'oldest' | 'most_clicks' | 'least_clicks' | 'title';
-export type FilterStatus = 'all' | 'active' | 'expired' | 'protected';

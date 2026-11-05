@@ -5,7 +5,8 @@
 
 import React from 'react';
 import { ActiveTab } from '../types/index.ts';
-import { Link2, Sun, Moon, Plus } from 'lucide-react';
+import { VexunoLogo } from './VexunoLogo.tsx';
+import { Sun, Moon, Plus } from 'lucide-react';
 
 interface NavbarProps {
   activeTab: ActiveTab;
@@ -13,7 +14,6 @@ interface NavbarProps {
   isDark: boolean;
   onToggleTheme: () => void;
   onNewLinkClick: () => void;
-  totalLinksCount: number;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -24,116 +24,89 @@ export const Navbar: React.FC<NavbarProps> = ({
   onNewLinkClick,
 }) => {
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/90 backdrop-blur-md dark:border-slate-800/80 dark:bg-slate-900/90 transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-8 h-16">
-          {/* Zone 1: Single text wordmark */}
+    <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/95 backdrop-blur-md dark:border-slate-800 dark:bg-slate-950/95 transition-colors">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
+        <div className="flex items-center justify-between gap-6 h-14 sm:h-16">
+          {/* Brand */}
           <button
             onClick={() => onTabChange('shortener')}
-            className="flex items-center gap-2.5 text-left group whitespace-nowrap shrink-0 focus:outline-none"
-            aria-label="LinkShrink Home"
+            className="group whitespace-nowrap shrink-0 focus:outline-none"
+            aria-label="VEXUNO Home"
           >
-            <div className="w-8 h-8 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-slate-950 flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform">
-              <Link2 className="w-4 h-4 stroke-[2.5]" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-base font-bold tracking-tight text-slate-900 dark:text-white">
-                LinkShrink
-              </span>
-            </div>
+            <VexunoLogo size="md" />
           </button>
 
-          {/* Zone 2: 4-5 single-line clean text navigation links */}
-          <nav className="hidden md:flex items-center gap-1 sm:gap-2">
+          {/* Clean Navigation */}
+          <nav className="hidden md:flex items-center gap-1">
             <button
               onClick={() => onTabChange('shortener')}
-              className={`px-3 py-1.5 text-sm font-medium rounded-md whitespace-nowrap shrink-0 transition-colors ${
+              className={`px-3 py-1.5 text-xs font-medium rounded-lg whitespace-nowrap shrink-0 transition-colors ${
                 activeTab === 'shortener'
-                  ? 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  ? 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 font-semibold'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              Shortener
+              Shorten
             </button>
             <button
               onClick={() => onTabChange('links')}
-              className={`px-3 py-1.5 text-sm font-medium rounded-md whitespace-nowrap shrink-0 transition-colors ${
+              className={`px-3 py-1.5 text-xs font-medium rounded-lg whitespace-nowrap shrink-0 transition-colors ${
                 activeTab === 'links'
-                  ? 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  ? 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 font-semibold'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              My Links
+              Links
             </button>
             <button
               onClick={() => onTabChange('analytics')}
-              className={`px-3 py-1.5 text-sm font-medium rounded-md whitespace-nowrap shrink-0 transition-colors ${
+              className={`px-3 py-1.5 text-xs font-medium rounded-lg whitespace-nowrap shrink-0 transition-colors ${
                 activeTab === 'analytics'
-                  ? 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  ? 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 font-semibold'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               Analytics
             </button>
-            <button
-              onClick={() => onTabChange('utm')}
-              className={`px-3 py-1.5 text-sm font-medium rounded-md whitespace-nowrap shrink-0 transition-colors ${
-                activeTab === 'utm'
-                  ? 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-              }`}
-            >
-              UTM Builder
-            </button>
-            <button
-              onClick={() => onTabChange('batch')}
-              className={`px-3 py-1.5 text-sm font-medium rounded-md whitespace-nowrap shrink-0 transition-colors ${
-                activeTab === 'batch'
-                  ? 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-              }`}
-            >
-              Batch Mode
-            </button>
           </nav>
 
-          {/* Zone 3: 1 primary action & theme switch */}
-          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+          {/* Right Controls */}
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            {/* Theme Toggle */}
             <button
               onClick={onToggleTheme}
               aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-              className="p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="p-2 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 rounded-lg transition-colors"
             >
               {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>
 
+            {/* Quick Action */}
             <button
               onClick={onNewLinkClick}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold text-white bg-slate-900 dark:bg-white dark:text-slate-900 rounded-lg hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors shadow-sm whitespace-nowrap shrink-0 active:scale-95"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white bg-slate-900 dark:bg-white dark:text-slate-900 rounded-lg hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors shadow-xs"
             >
               <Plus className="w-3.5 h-3.5" />
-              <span>Create Link</span>
+              <span>New</span>
             </button>
           </div>
         </div>
 
         {/* Mobile secondary tab bar */}
-        <div className="flex md:hidden overflow-x-auto py-2 border-t border-slate-100 dark:border-slate-800/60 no-scrollbar gap-1">
-          {(['shortener', 'links', 'analytics', 'utm', 'batch'] as ActiveTab[]).map((tab) => (
+        <div className="flex md:hidden overflow-x-auto py-2 border-t border-slate-100 dark:border-slate-800/60 no-scrollbar gap-1 text-xs">
+          {(['shortener', 'links', 'analytics'] as ActiveTab[]).map((tab) => (
             <button
               key={tab}
               onClick={() => onTabChange(tab)}
-              className={`px-3 py-1 text-xs font-medium rounded-md whitespace-nowrap shrink-0 transition-colors ${
+              className={`px-3 py-1 rounded-md whitespace-nowrap shrink-0 transition-colors ${
                 activeTab === tab
                   ? 'text-slate-900 dark:text-white bg-slate-100 dark:bg-slate-800 font-semibold'
-                  : 'text-slate-600 dark:text-slate-400'
+                  : 'text-slate-500 dark:text-slate-400'
               }`}
             >
-              {tab === 'shortener' && 'Shortener'}
-              {tab === 'links' && 'My Links'}
+              {tab === 'shortener' && 'Shorten'}
+              {tab === 'links' && 'Links'}
               {tab === 'analytics' && 'Analytics'}
-              {tab === 'utm' && 'UTM Builder'}
-              {tab === 'batch' && 'Batch Mode'}
             </button>
           ))}
         </div>

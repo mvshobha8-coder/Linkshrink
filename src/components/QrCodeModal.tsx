@@ -21,7 +21,7 @@ export const QrCodeModal: React.FC<QrCodeModalProps> = ({ link, onClose, baseUrl
   const [copied, setCopied] = useState(false);
   const [downloading, setDownloading] = useState(false);
 
-  const fullShortUrl = link ? `${baseUrl}/r/${link.shortCode}` : '';
+  const fullShortUrl = link ? (link.shortUrl || `${baseUrl}/r/${link.shortCode}`) : '';
 
   useEffect(() => {
     if (!link || !canvasRef.current) return;
@@ -51,7 +51,7 @@ export const QrCodeModal: React.FC<QrCodeModalProps> = ({ link, onClose, baseUrl
     const url = canvasRef.current.toDataURL('image/png');
     const a = document.createElement('a');
     a.href = url;
-    a.download = `qr_${link.shortCode}.png`;
+    a.download = `vexuno_qr_${link.shortCode}.png`;
     a.click();
     setTimeout(() => setDownloading(false), 800);
   };
